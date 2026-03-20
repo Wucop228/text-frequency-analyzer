@@ -1,0 +1,16 @@
+[project]
+name = "word-frequency-api"
+version = "1.0.0"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi==0.135.1",
+    "uvicorn[standard]==0.42.0",
+    "python-multipart==0.0.22",
+    "pydantic-settings==2.13.1",
+    "sqlalchemy[asyncio]==2.0.46",
+    "asyncpg==0.31.0",
+    "alembic==1.18.4",
+    "pymorphy3==2.0.6",
+    "openpyxl==3.1.5",
+    "aiofiles==25.1.0",
+]
