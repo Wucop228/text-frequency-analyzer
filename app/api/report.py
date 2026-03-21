@@ -34,7 +34,7 @@ async def export_report(file: UploadFile, session: AsyncSession = Depends(get_db
     )
     await session.commit()
 
-    asyncio.create_task(process_report(report.id, session))
+    asyncio.create_task(process_report(report.id))
 
     return report
 
