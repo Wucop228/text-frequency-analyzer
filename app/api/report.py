@@ -16,7 +16,7 @@ router = APIRouter(prefix="/public/report", tags=["reports"])
 @router.get("/{report_id}", response_model=ReportResponse)
 async def get_report(report_id: int, session: AsyncSession = Depends(get_db)):
     dao = ReportDAO(session)
-    report = dao.find_one_or_none(id=report_id)
+    report = await dao.find_one_or_none(id=report_id)
 
     if not report:
         raise HTTPException(status_code=404, detail="report not found")
