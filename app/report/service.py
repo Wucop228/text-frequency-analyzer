@@ -1,6 +1,6 @@
 import asyncio
 import uuid
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 import time
 
 from loguru import logger
@@ -13,7 +13,7 @@ from app.report.enums import ReportStatus
 from app.core.database import async_session_maker
 
 semaphore = asyncio.Semaphore(settings.MAX_CONCURRENT_TASKS)
-executor = ProcessPoolExecutor(max_workers=settings.MAX_CONCURRENT_TASKS)
+executor = ThreadPoolExecutor(max_workers=settings.MAX_CONCURRENT_TASKS)
 
 
 def process_file(input_path: str, output_path: str):

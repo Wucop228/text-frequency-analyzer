@@ -20,6 +20,8 @@ services:
         condition: service_healthy
     ports:
       - "8000:8000"
+    volumes:
+      - app_storage:/app/storage
     restart: unless-stopped
 volumes:
   db_data:
