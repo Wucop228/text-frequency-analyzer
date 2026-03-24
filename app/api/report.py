@@ -3,6 +3,7 @@ import asyncio
 from fastapi import APIRouter, Depends, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
+from loguru import logger
 
 from app.report.schemas import ReportResponse
 from app.core.database import get_db
@@ -19,12 +20,14 @@ async def get_report(report_id: int, session: AsyncSession = Depends(get_db)):
     report = await dao.find_one_or_none(id=report_id)
 
     if not report:
+        logger.warning("report not found : id={}", report_id)
         raise HTTPException(status_code=404, detail="report not found")
 
     return report
 
 @router.post("/export", response_model=ReportResponse)
 async def export_report(file: UploadFile, session: AsyncSession = Depends(get_db)):
+    logger.info("upload file: {}", file.filename)
     original_filename, saved_filename = await save_upload_file(file)
 
     dao = ReportDAO(session)
@@ -36,6 +39,7 @@ async def export_report(file: UploadFile, session: AsyncSession = Depends(get_db
 
     asyncio.create_task(process_report(report.id))
 
+    logger.info("report created : id={}", report.id)
     return report
 
 @router.get("/{report_id}/download")
@@ -44,6 +48,7 @@ async def download_report(report_id: int, session: AsyncSession = Depends(get_db
     report = await dao.find_one_or_none(id=report_id)
 
     if not report or not report.result_filename:
+        logger.warning("download failed : id={}", report_id)
         raise HTTPException(status_code=404, detail="report not found or not ready")
 
     filepath = f"{settings.RESULT_DIR}/{report.result_filename}"
